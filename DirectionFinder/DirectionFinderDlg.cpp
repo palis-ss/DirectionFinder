@@ -183,9 +183,9 @@ void CDirectionFinderDlg::OnBnClickedComputeButton()
 	swscanf_s(s, L"%lf, %lf", &txcoord.lat, &txcoord.lon);
 	*/
 	
-	//res = compute_distance_bearing_vincenty(txcoord, rxcoord);
-	res.angle = compute_bearing_deg(txcoord, rxcoord);
-	res.dist = compute_distance_haversine(txcoord, rxcoord);
+	res = compute_distance_bearing_vincenty(txcoord, rxcoord);
+	//res.angle = compute_bearing_deg(txcoord, rxcoord);
+	//res.dist = compute_distance_haversine(txcoord, rxcoord);
 	swprintf(s, 100,  L"%.2f degrees %.2f metres", res.angle, res.dist);
 
 	SetDlgItemText(IDC_OUTPUT_STATIC, s);

@@ -10,7 +10,7 @@
 //#define EARTH_RADIUS_km	6371.0 // km
 //#define EARTH_RADIUS_m	6378137.0 // m
 #define EARTH_RADIUS_EQUITORIAL	6378137.0 //m
-#define EARTH_RADIUS_POLAR		6356752.3142  //m
+#define EARTH_RADIUS_POLAR		6356752.314245  //m
 
 struct _COORD_
 {

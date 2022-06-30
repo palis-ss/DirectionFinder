@@ -212,7 +212,7 @@ double inner_tangent_angle_spherical(double r,double dist)
 
 struct _POLAR_COOR_ compute_distance_bearing_vincenty(struct _COORD_ pos1, struct _COORD_ pos2)
 {
-  double a = 6378137, b = 6356752.314245,  f = 1/298.257223563;  // WGS-84 ellipsoid params
+  double a = EARTH_RADIUS_EQUITORIAL, b = EARTH_RADIUS_POLAR,  f = 1/298.257223563;  // WGS-84 ellipsoid params
   double L = (pos2.lon-pos1.lon)*DEG2RAD;
   double U1 = atan((1-f) * tan(pos1.lat*DEG2RAD));
   double U2 = atan((1-f) * tan(pos2.lat*DEG2RAD));
