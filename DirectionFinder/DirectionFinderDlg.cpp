@@ -14,65 +14,67 @@
 #endif
 
 
-// CAboutDlg dialog used for App About
-
-class CAboutDlg : public CDialogEx
-{
-public:
-	CAboutDlg();
-
-// Dialog Data
-	enum { IDD = IDD_ABOUTBOX };
-
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-
-// Implementation
-protected:
-	DECLARE_MESSAGE_MAP()
-};
-
-CAboutDlg::CAboutDlg() : CDialogEx(CAboutDlg::IDD)
-{
-}
-
-void CAboutDlg::DoDataExchange(CDataExchange* pDX)
-{
-	CDialogEx::DoDataExchange(pDX);
-}
-
-BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
-END_MESSAGE_MAP()
-
-
 // CDirectionFinderDlg dialog
 
-
-
 CDirectionFinderDlg::CDirectionFinderDlg(CWnd* pParent /*=NULL*/)
-	: CDialogEx(CDirectionFinderDlg::IDD, pParent)
+//	: CDialogEx(CDirectionFinderDlg::IDD, pParent)
+	: CPropertyPage(CDirectionFinderDlg::IDD)
 	, m_szRxLat(_T(""))
 	, m_szTxLat(_T(""))
 	, m_szRxLon(_T(""))
 	, m_szTxLon(_T(""))
+	, m_nLocationFormat(0)
+	, m_szTxLatDeg(_T(""))
+	, m_szTxLatMin(_T(""))
+	, m_szTxLatSec(_T(""))
+	, m_szTxLonDeg(_T(""))
+	, m_szTxLonMin(_T(""))
+	, m_szTxLonSec(_T(""))
+	, m_szRxLatDeg(_T(""))
+	, m_szRxLatMin(_T(""))
+	, m_szRxLatSec(_T(""))
+	, m_szRxLonDeg(_T(""))
+	, m_szRxLonMin(_T(""))
+	, m_szRxLonSec(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
 
 void CDirectionFinderDlg::DoDataExchange(CDataExchange* pDX)
-{
-	CDialogEx::DoDataExchange(pDX);
+{	
+	CPropertyPage::DoDataExchange(pDX);
+
 	DDX_Text(pDX, IDC_RX_LAT_EDIT, m_szRxLat);
 	DDX_Text(pDX, IDC_TX_LAT_EDIT, m_szTxLat);
 	DDX_Text(pDX, IDC_RX_LON_EDIT, m_szRxLon);
 	DDX_Text(pDX, IDC_TX_LON_EDIT, m_szTxLon);
+	DDX_Radio(pDX, IDC_RADIO1, m_nLocationFormat);
+	DDX_Control(pDX, IDC_NS_COMBO1, m_cbCombo1);
+	DDX_Control(pDX, IDC_NS_COMBO2, m_cbCombo2);
+	DDX_Control(pDX, IDC_NS_COMBO3, m_cbCombo3);
+	DDX_Control(pDX, IDC_NS_COMBO4, m_cbCombo4);
+	DDX_Text(pDX, IDC_TX_LAT_DEG_EDIT, m_szTxLatDeg);
+	DDX_Text(pDX, IDC_TX_LAT_MIN_EDIT, m_szTxLatMin);
+	DDX_Text(pDX, IDC_TX_LAT_SEC_EDIT, m_szTxLatSec);
+	DDX_Text(pDX, IDC_TX_LON_DEG_EDIT, m_szTxLonDeg);
+	DDX_Text(pDX, IDC_TX_LON_MIN_EDIT, m_szTxLonMin);
+	DDX_Text(pDX, IDC_TX_LON_SEC_EDIT, m_szTxLonSec);
+	DDX_Text(pDX, IDC_RX_LAT_DEG_EDIT, m_szRxLatDeg);
+	DDX_Text(pDX, IDC_RX_LAT_MIN_EDIT, m_szRxLatMin);
+	DDX_Text(pDX, IDC_RX_LAT_SEC_EDIT, m_szRxLatSec);
+	DDX_Text(pDX, IDC_RX_LON_DEG_EDIT, m_szRxLonDeg);
+	DDX_Text(pDX, IDC_RX_LON_MIN_EDIT, m_szRxLonMin);
+	DDX_Text(pDX, IDC_RX_LON_SEC_EDIT, m_szRxLonSec);
 }
 
-BEGIN_MESSAGE_MAP(CDirectionFinderDlg, CDialogEx)
+BEGIN_MESSAGE_MAP(CDirectionFinderDlg, CPropertyPage)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_COMPUTE_BUTTON, &CDirectionFinderDlg::OnBnClickedComputeButton)
+	ON_BN_CLICKED(IDC_RADIO2, &CDirectionFinderDlg::OnBnClickedRadio2)
+	ON_BN_CLICKED(IDC_RADIO1, &CDirectionFinderDlg::OnBnClickedRadio1)
+	ON_BN_CLICKED(IDC_SWAPLOC_BUTTON, &CDirectionFinderDlg::OnBnClickedSwaplocButton)
 END_MESSAGE_MAP()
 
 
@@ -80,49 +82,21 @@ END_MESSAGE_MAP()
 
 BOOL CDirectionFinderDlg::OnInitDialog()
 {
-	CDialogEx::OnInitDialog();
-
-	// Add "About..." menu item to system menu.
-
-	// IDM_ABOUTBOX must be in the system command range.
-	ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
-	ASSERT(IDM_ABOUTBOX < 0xF000);
-
-	CMenu* pSysMenu = GetSystemMenu(FALSE);
-	if (pSysMenu != NULL)
-	{
-		BOOL bNameValid;
-		CString strAboutMenu;
-		bNameValid = strAboutMenu.LoadString(IDS_ABOUTBOX);
-		ASSERT(bNameValid);
-		if (!strAboutMenu.IsEmpty())
-		{
-			pSysMenu->AppendMenu(MF_SEPARATOR);
-			pSysMenu->AppendMenu(MF_STRING, IDM_ABOUTBOX, strAboutMenu);
-		}
-	}
-
-	// Set the icon for this dialog.  The framework does this automatically
-	//  when the application's main window is not a dialog
-	SetIcon(m_hIcon, TRUE);			// Set big icon
-	SetIcon(m_hIcon, FALSE);		// Set small icon
+	CPropertyPage::OnInitDialog();
 
 	// TODO: Add extra initialization here
+	m_cbCombo1.SetCurSel(0);
+	m_cbCombo2.SetCurSel(0);
+	m_cbCombo3.SetCurSel(0);
+	m_cbCombo4.SetCurSel(0);
+
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
 void CDirectionFinderDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
-	if ((nID & 0xFFF0) == IDM_ABOUTBOX)
-	{
-		CAboutDlg dlgAbout;
-		dlgAbout.DoModal();
-	}
-	else
-	{
-		CDialogEx::OnSysCommand(nID, lParam);
-	}
+	CPropertyPage::OnSysCommand(nID, lParam);
 }
 
 // If you add a minimize button to your dialog, you will need the code below
@@ -150,7 +124,7 @@ void CDirectionFinderDlg::OnPaint()
 	}
 	else
 	{
-		CDialogEx::OnPaint();
+		CPropertyPage::OnPaint();
 	}
 }
 
@@ -165,28 +139,37 @@ HCURSOR CDirectionFinderDlg::OnQueryDragIcon()
 
 void CDirectionFinderDlg::OnBnClickedComputeButton()
 {
-	struct _COORD_ rxcoord, txcoord;	
+	struct _COORD_ rxcoord = {}, txcoord = {};
 	struct _POLAR_COOR_ res;
 	TCHAR s[100];
 
 	UpdateData();
-	
-	rxcoord.lat = _wtof(LPCTSTR(m_szRxLat));
-	txcoord.lat = _wtof(LPCTSTR(m_szTxLat));
-	rxcoord.lon = _wtof(LPCTSTR(m_szRxLon));
-	txcoord.lon = _wtof(LPCTSTR(m_szTxLon));
-	/*
-	wcscpy_s(s, 100, LPCTSTR(m_szRx));
-	swscanf_s(s, L"%lf, %lf", &rxcoord.lat, &rxcoord.lon);
 
-	wcscpy_s(s, 100, LPCTSTR(m_szTx));
-	swscanf_s(s, L"%lf, %lf", &txcoord.lat, &txcoord.lon);
-	*/
-	
+	switch (m_nLocationFormat)
+	{	
+	case 0:
+		rxcoord.lat = _wtof(LPCTSTR(m_szRxLat));
+		txcoord.lat = _wtof(LPCTSTR(m_szTxLat));
+		rxcoord.lon = _wtof(LPCTSTR(m_szRxLon));
+		txcoord.lon = _wtof(LPCTSTR(m_szTxLon));
+		break;
+	case 1:
+		rxcoord.lat = _wtof(LPCTSTR(m_szRxLatDeg)) + _wtof(LPCTSTR(m_szRxLatMin)) / 60.0 + _wtof(LPCTSTR(m_szRxLatSec)) / 3600.0;
+		txcoord.lat = _wtof(LPCTSTR(m_szTxLatDeg)) + _wtof(LPCTSTR(m_szTxLatMin)) / 60.0 + _wtof(LPCTSTR(m_szTxLatSec)) / 3600.0;
+		rxcoord.lon = _wtof(LPCTSTR(m_szRxLonDeg)) + _wtof(LPCTSTR(m_szRxLonMin)) / 60.0 + _wtof(LPCTSTR(m_szRxLonSec)) / 3600.0;
+		txcoord.lon = _wtof(LPCTSTR(m_szTxLonDeg)) + _wtof(LPCTSTR(m_szTxLonMin)) / 60.0 + _wtof(LPCTSTR(m_szTxLonSec)) / 3600.0;
+
+		txcoord.lat *= m_cbCombo1.GetCurSel() == 0 ? 1.0 : -1.0;
+		txcoord.lon *= m_cbCombo2.GetCurSel() == 0 ? 1.0 : -1.0;
+		rxcoord.lat *= m_cbCombo3.GetCurSel() == 0 ? 1.0 : -1.0;
+		rxcoord.lon *= m_cbCombo4.GetCurSel() == 0 ? 1.0 : -1.0;
+		break;
+	}
+
 	res = compute_distance_bearing_vincenty(txcoord, rxcoord);
 	//res.angle = compute_bearing_deg(txcoord, rxcoord);
 	//res.dist = compute_distance_haversine(txcoord, rxcoord);
-	swprintf(s, 100,  L"%.2f degrees %.2f metres", res.angle, res.dist);
+	swprintf(s, 100,  L"%.2f degrees %.2f m", res.angle, res.dist);
 
 	SetDlgItemText(IDC_OUTPUT_STATIC, s);
 
@@ -197,5 +180,118 @@ BOOL CDirectionFinderDlg::DestroyWindow()
 {
 	// TODO: Add your specialized code here and/or call the base class
 
-	return CDialogEx::DestroyWindow();
+	return CPropertyPage::DestroyWindow();
+}
+
+BOOL CDirectionFinderDlg::EnableCntrolGroup(int GroupID, BOOL showwindow)
+{	
+	CWnd* pCtrlWnd;
+
+
+	if ((pCtrlWnd = GetDlgItem(GroupID)) == NULL)
+	{
+		return FALSE;
+	}
+
+	do
+	{
+		pCtrlWnd->ShowWindow(showwindow?SW_SHOW:SW_HIDE);
+	} while ((pCtrlWnd = GetNextDlgGroupItemEx(pCtrlWnd)) != NULL);
+
+	return TRUE;
+}
+
+CWnd* CDirectionFinderDlg::GetNextDlgGroupItemEx(CWnd * pCtrlWnd)
+{
+	CWnd* pWnd;
+
+	if (pCtrlWnd == NULL
+		|| pCtrlWnd->GetDlgCtrlID() == 0
+		|| (pWnd = pCtrlWnd->GetWindow(GW_HWNDNEXT)) == NULL
+		|| (pWnd->GetStyle() & WS_GROUP))
+	{
+		return NULL;
+	}
+
+	return pWnd;
+}
+
+void CDirectionFinderDlg::OnBnClickedRadio1()
+{	
+	EnableCntrolGroup(IDC_DMS_GROUP, FALSE); 
+	EnableCntrolGroup(IDC_DECIMAL_GROUP, TRUE);	
+}
+
+
+void CDirectionFinderDlg::OnBnClickedRadio2()
+{	
+	EnableCntrolGroup(IDC_DECIMAL_GROUP, FALSE);
+	EnableCntrolGroup(IDC_DMS_GROUP, TRUE);
+}
+
+
+void CDirectionFinderDlg::OnBnClickedSwaplocButton()
+{
+	CString sztx, szrx;
+	int txhem, rxhem;
+
+	UpdateData();
+	switch (m_nLocationFormat)
+	{
+	case 0:
+		GetDlgItemText(IDC_TX_LAT_EDIT, sztx);
+		GetDlgItemText(IDC_RX_LAT_EDIT, szrx);
+		SetDlgItemText(IDC_TX_LAT_EDIT, szrx);
+		SetDlgItemText(IDC_RX_LAT_EDIT, sztx);
+
+		GetDlgItemText(IDC_TX_LON_EDIT, sztx);
+		GetDlgItemText(IDC_RX_LON_EDIT, szrx);
+		SetDlgItemText(IDC_TX_LON_EDIT, szrx);
+		SetDlgItemText(IDC_RX_LON_EDIT, sztx);
+		
+		break;
+	case 1:
+		GetDlgItemText(IDC_TX_LAT_DEG_EDIT, sztx);
+		GetDlgItemText(IDC_RX_LAT_DEG_EDIT, szrx);
+		SetDlgItemText(IDC_TX_LAT_DEG_EDIT, szrx);
+		SetDlgItemText(IDC_RX_LAT_DEG_EDIT, sztx);
+
+		GetDlgItemText(IDC_TX_LON_DEG_EDIT, sztx);
+		GetDlgItemText(IDC_RX_LON_DEG_EDIT, szrx);
+		SetDlgItemText(IDC_TX_LON_DEG_EDIT, szrx);
+		SetDlgItemText(IDC_RX_LON_DEG_EDIT, sztx);
+
+		GetDlgItemText(IDC_TX_LAT_MIN_EDIT, sztx);
+		GetDlgItemText(IDC_RX_LAT_MIN_EDIT, szrx);
+		SetDlgItemText(IDC_TX_LAT_MIN_EDIT, szrx);
+		SetDlgItemText(IDC_RX_LAT_MIN_EDIT, sztx);
+
+		GetDlgItemText(IDC_TX_LON_MIN_EDIT, sztx);
+		GetDlgItemText(IDC_RX_LON_MIN_EDIT, szrx);
+		SetDlgItemText(IDC_TX_LON_MIN_EDIT, szrx);
+		SetDlgItemText(IDC_RX_LON_MIN_EDIT, sztx);
+
+		GetDlgItemText(IDC_TX_LAT_SEC_EDIT, sztx);
+		GetDlgItemText(IDC_RX_LAT_SEC_EDIT, szrx);
+		SetDlgItemText(IDC_TX_LAT_SEC_EDIT, szrx);
+		SetDlgItemText(IDC_RX_LAT_SEC_EDIT, sztx);
+
+		GetDlgItemText(IDC_TX_LON_SEC_EDIT, sztx);
+		GetDlgItemText(IDC_RX_LON_SEC_EDIT, szrx);
+		SetDlgItemText(IDC_TX_LON_SEC_EDIT, szrx);
+		SetDlgItemText(IDC_RX_LON_SEC_EDIT, sztx);
+
+		txhem = m_cbCombo1.GetCurSel();
+		rxhem = m_cbCombo3.GetCurSel();
+		m_cbCombo1.SetCurSel(rxhem);
+		m_cbCombo3.SetCurSel(txhem);
+
+		txhem = m_cbCombo2.GetCurSel();
+		rxhem = m_cbCombo4.GetCurSel();
+		m_cbCombo2.SetCurSel(rxhem);
+		m_cbCombo4.SetCurSel(txhem);
+		break;
+	default:
+		break;
+	}
 }

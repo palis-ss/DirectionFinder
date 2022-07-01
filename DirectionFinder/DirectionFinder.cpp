@@ -4,7 +4,8 @@
 
 #include "stdafx.h"
 #include "DirectionFinder.h"
-#include "DirectionFinderDlg.h"
+//#include "DirectionFinderDlg.h"
+#include "DirectionFinderSheet.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -67,7 +68,8 @@ BOOL CDirectionFinderApp::InitInstance()
 	// such as the name of your company or organization
 	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
 
-	CDirectionFinderDlg dlg;
+	//CDirectionFinderDlg dlg;
+	CDirectionFinderSheet dlg(LPCTSTR(L"Direction Finder"));
 	m_pMainWnd = &dlg;
 	INT_PTR nResponse = dlg.DoModal();
 	if (nResponse == IDOK)

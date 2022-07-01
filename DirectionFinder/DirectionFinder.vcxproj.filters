@@ -36,6 +36,12 @@
     <ClInclude Include="flightmath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DirectionFinderSheet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RangeAzimuthDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectionFinder.cpp">
@@ -48,6 +54,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="flightmath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectionFinderSheet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RangeAzimuthDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

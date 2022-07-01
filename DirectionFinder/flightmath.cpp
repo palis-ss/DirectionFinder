@@ -75,13 +75,13 @@ double compute_distance_spherical_law_of_cosine(struct _COORD_ pos1, struct _COO
 
 
 
-// http://www.movable-type.co.uk/scripts/latlong-vincenty-direct.html
+// http://www.movable-type.co.uk/scripts/latlong-vincenty.html#direct
 // This function finds location of the destination point
 // given a start point, an initial bearing, and a distance travelled
 struct _COORD_ compute_coord_vincenty(struct _COORD_ pos, double brng, double dist)
 {
-	struct _COORD_ retpos;	
-	double a = 6378137.0, b = 6356752.3142,  f = 1.0/298.257223563;  // WGS-84 ellipsiod
+	struct _COORD_ retpos;
+	double a = EARTH_RADIUS_EQUITORIAL, b = EARTH_RADIUS_POLAR, f = EARTH_FLATTENING;  // WGS-84 ellipsoid params
 	double s = dist;
 	double alpha1 = brng*pi/180.0;
 	double sinAlpha1 = sin(alpha1);
@@ -164,7 +164,7 @@ struct _COORD_ compute_coord_per_bearing_and_distance(struct _COORD_ pos, double
 }
 
 
-// http://en.wikipedia.org/wiki/Rate_one_turn
+// https://en.wikipedia.org/wiki/Standard_rate_turn
 // computes turn radius of an aircraft given true speed and rate of turn
 double turn_radius(double TAS, double ROT)
 {
@@ -178,7 +178,7 @@ double turn_radius(double TAS, double ROT)
 
 // Based on Napier's pentagon
 // Find the angle given 2 sides of a right spherical triangle
-// http://en.wikipedia.org/wiki/Spherical_trigonometry#Napier.27s_Pentagon
+// https://en.wikipedia.org/wiki/Spherical_trigonometry#Napier's_rules_for_right_spherical_triangles
 //
 // we are working in radian here!!
 // A and C are sides in radian
@@ -210,9 +210,10 @@ double inner_tangent_angle_spherical(double r,double dist)
 }
 
 
+// http://www.movable-type.co.uk/scripts/latlong-vincenty.html#inverse
 struct _POLAR_COOR_ compute_distance_bearing_vincenty(struct _COORD_ pos1, struct _COORD_ pos2)
 {
-  double a = EARTH_RADIUS_EQUITORIAL, b = EARTH_RADIUS_POLAR,  f = 1/298.257223563;  // WGS-84 ellipsoid params
+  double a = EARTH_RADIUS_EQUITORIAL, b = EARTH_RADIUS_POLAR,  f = EARTH_FLATTENING;  // WGS-84 ellipsoid params
   double L = (pos2.lon-pos1.lon)*DEG2RAD;
   double U1 = atan((1-f) * tan(pos1.lat*DEG2RAD));
   double U2 = atan((1-f) * tan(pos2.lat*DEG2RAD));
@@ -291,3 +292,66 @@ double geocentric_radius_m(double latdeg)
 	return r;
 }
 
+
+
+#if 0
+
+
+
+double ECEF_XYZ2LatLonH_iterative(double X, double Y, double Z, double Lat0)
+{
+	// This function transfer Standard ECEF XYZ to Lat, Lon, H
+	// Lat, Lon are in radian. Lat is geodesic.
+	// Use iterative algorithm from Noureldin, Chapter 2.5.4
+
+	// Atan2(y,x) will return angle from -PI to PI 
+
+	double Lat, Lon;
+	double H = 0;
+	double RN, P;
+	double SinLat, CosLat;
+	double Lat_old, H_old;
+
+	// WGS84
+	//double e = 0.08181919084261; // Eccentricity 
+	double e2 = 0.00669437999014; // e^2 
+	double a = Sixdof._sa; // 6378137.0 m
+
+	// Longitude
+	Lon = Math.Atan2(Y, X); // rad 
+
+	// Latitude
+	Lat = Lat0; // Initial guess
+	// Lat = Math.Atan(Z / Math.Sqrt(X*X + Y*Y));  // We can use this approximation as initial guess if there is no Lat0 information.
+
+	double convergence_criteria_dLat = 0.000000001; // deg
+	double convergence_criteria_dH = 0.000001; // m
+	double dLat = 999.0, dH = 999.0; // any number bigger than criteria
+	int i = 0; // loop counter
+	int max_iteration = 20;
+
+	while ((dLat > convergence_criteria_dLat || dH > convergence_criteria_dH) && i <= max_iteration)
+	{
+		SinLat = Math.Sin(Lat);
+		CosLat = Math.Cos(Lat);
+		P = Math.Sqrt(X * X + Y * Y);
+
+		Lat_old = Lat;
+		H_old = H;
+
+		RN = a / Math.Sqrt(1 - e2 * SinLat * SinLat);
+		H = P / CosLat - RN;
+
+		Lat = Math.Atan2((Z / P) * (RN + H), RN * (1 - e2) + H);
+
+		dH = Math.Abs(H - H_old);
+		dLat = Util.RAD2DEG(Math.Abs(Lat - Lat_old));
+		i++;
+	}
+
+	double[] result = new double[] { Lat, Lon, H };
+
+	return result;
+}
+
+#endif
