@@ -11,18 +11,28 @@
 //#define EARTH_RADIUS_m	6378137.0 // m
 #define EARTH_RADIUS_EQUITORIAL	6378137.0 //m
 #define EARTH_RADIUS_POLAR		6356752.314245  //m
-#define EARTH_FLATTENING		1/298.257223563
+#define EARTH_FLATTENING		0.00335281066474748071984552861852  // 1.0/298.257223563
+#define EARTH_ECCENTRICITY_SQ	0.00669437999014
 
 struct _COORD_
 {
 	double lat;
 	double lon;
+	double alt;
 };
 
 struct _POLAR_COOR_
 {
 	double dist;
 	double angle;
+};
+
+struct _DMS_
+{
+	double deg;
+	double min;
+	double sec;
+	double alt;
 };
 
 double compute_bearing_deg(struct _COORD_ dest, struct _COORD_ org);
@@ -36,3 +46,4 @@ double inner_tangent_angle_spherical(double r,double dist);
 double angle_from_sides_spherical(double a, double C);
 struct _POLAR_COOR_ compute_distance_bearing_vincenty(struct _COORD_ pos1, struct _COORD_ pos2);
 double geocentric_radius_m(double latdeg);
+struct _DMS_ DECtoDMS(double deg);

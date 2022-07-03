@@ -40,4 +40,7 @@ public:
 	CString m_szTxLonSec;
 	CComboBox m_cbCombo1;
 	CComboBox m_cbCombo2;
+	virtual BOOL OnInitDialog();
+	CString m_szRange;
+	CString m_szAzimuth;
 };

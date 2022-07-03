@@ -169,7 +169,7 @@ void CDirectionFinderDlg::OnBnClickedComputeButton()
 	res = compute_distance_bearing_vincenty(txcoord, rxcoord);
 	//res.angle = compute_bearing_deg(txcoord, rxcoord);
 	//res.dist = compute_distance_haversine(txcoord, rxcoord);
-	swprintf(s, 100,  L"%.2f degrees %.2f m", res.angle, res.dist);
+	swprintf(s, 100, L"%.4f degrees\t%.2f m\n= %.2f radians\t\t= %.2f km\n= %.2f mils", res.angle, res.dist, res.angle * DEG2RAD, res.dist/1000.0,res.angle * 17.777777777);
 
 	SetDlgItemText(IDC_OUTPUT_STATIC, s);
 
@@ -217,16 +217,146 @@ CWnd* CDirectionFinderDlg::GetNextDlgGroupItemEx(CWnd * pCtrlWnd)
 }
 
 void CDirectionFinderDlg::OnBnClickedRadio1()
-{	
-	EnableCntrolGroup(IDC_DMS_GROUP, FALSE); 
-	EnableCntrolGroup(IDC_DECIMAL_GROUP, TRUE);	
+{
+	double dec;
+	EnableCntrolGroup(IDC_DMS_GROUP, FALSE);
+	EnableCntrolGroup(IDC_DECIMAL_GROUP, TRUE);
+
+	UpdateData();
+	if (!m_szTxLatDeg.IsEmpty() && !m_szTxLatMin.IsEmpty() && !m_szTxLatSec.IsEmpty())
+	{
+		dec = _wtof(LPCTSTR(m_szTxLatDeg)) + _wtof(LPCTSTR(m_szTxLatMin)) / 60.0 + _wtof(LPCTSTR(m_szTxLatSec)) / 3600.0;
+		if (m_cbCombo1.GetCurSel() != 0)
+			dec *= -1;
+
+		m_szTxLat.Format(L"%.6f", dec);
+	}
+	else
+		m_szTxLat.Empty();
+
+	if (!m_szTxLonDeg.IsEmpty() && !m_szTxLonMin.IsEmpty() && !m_szTxLonSec.IsEmpty())
+	{
+		dec = _wtof(LPCTSTR(m_szTxLonDeg)) + _wtof(LPCTSTR(m_szTxLonMin)) / 60.0 + _wtof(LPCTSTR(m_szTxLonSec)) / 3600.0;
+		if (m_cbCombo2.GetCurSel() != 0)
+			dec *= -1;
+		m_szTxLon.Format(L"%.6f", dec);
+	}
+	else
+		m_szTxLon.Empty();
+
+	if (!m_szRxLatDeg.IsEmpty() && !m_szRxLatMin.IsEmpty() && !m_szRxLatSec.IsEmpty())
+	{
+		dec = _wtof(LPCTSTR(m_szRxLatDeg)) + _wtof(LPCTSTR(m_szRxLatMin)) / 60.0 + _wtof(LPCTSTR(m_szRxLatSec)) / 3600.0;
+		if (m_cbCombo3.GetCurSel() != 0)
+			dec *= -1;
+
+		m_szRxLat.Format(L"%.6f", dec);
+	}
+	else
+		m_szRxLat.Empty();
+
+	if (!m_szRxLonDeg.IsEmpty() && !m_szRxLonMin.IsEmpty() && !m_szRxLonSec.IsEmpty())
+	{
+		dec = _wtof(LPCTSTR(m_szRxLonDeg)) + _wtof(LPCTSTR(m_szRxLonMin)) / 60.0 + _wtof(LPCTSTR(m_szRxLonSec)) / 3600.0;
+		if (m_cbCombo4.GetCurSel() != 0)
+			dec *= -1;
+		m_szRxLon.Format(L"%.6f", dec);
+	}
+	else
+		m_szRxLon.Empty();
+
+	UpdateData(FALSE);
 }
 
 
 void CDirectionFinderDlg::OnBnClickedRadio2()
-{	
+{
+	double deg;
+	struct _DMS_ dms = {};
+
 	EnableCntrolGroup(IDC_DECIMAL_GROUP, FALSE);
 	EnableCntrolGroup(IDC_DMS_GROUP, TRUE);
+
+	UpdateData();
+	if (!m_szTxLat.IsEmpty())
+	{
+		deg = _wtof(LPCTSTR(m_szTxLat));
+		dms = DECtoDMS(deg);
+		m_szTxLatDeg.Format(L"%d", (int)dms.deg);
+		m_szTxLatMin.Format(L"%d", (int)dms.min);
+		m_szTxLatSec.Format(L"%d", (int)dms.sec);
+
+		if (deg >= 0)
+			m_cbCombo1.SetCurSel(0);
+		else
+			m_cbCombo1.SetCurSel(1);
+	}
+	else
+	{
+		m_szTxLatDeg.Empty();
+		m_szTxLatMin.Empty();
+		m_szTxLatSec.Empty();
+	}
+
+	if (!m_szTxLon.IsEmpty())
+	{
+		deg = _wtof(LPCTSTR(m_szTxLon));
+		dms = DECtoDMS(deg);
+		m_szTxLonDeg.Format(L"%d", (int)dms.deg);
+		m_szTxLonMin.Format(L"%d", (int)dms.min);
+		m_szTxLonSec.Format(L"%d", (int)dms.sec);
+		if (deg >= 0)
+			m_cbCombo2.SetCurSel(0);
+		else
+			m_cbCombo2.SetCurSel(1);
+	}
+	else
+	{
+		m_szTxLonDeg.Empty();
+		m_szTxLonMin.Empty();
+		m_szTxLonSec.Empty();
+	}
+
+	if (!m_szRxLat.IsEmpty())
+	{
+		deg = _wtof(LPCTSTR(m_szRxLat));
+		dms = DECtoDMS(deg);
+		m_szRxLatDeg.Format(L"%d", (int)dms.deg);
+		m_szRxLatMin.Format(L"%d", (int)dms.min);
+		m_szRxLatSec.Format(L"%d", (int)dms.sec);
+
+		if (deg >= 0)
+			m_cbCombo3.SetCurSel(0);
+		else
+			m_cbCombo3.SetCurSel(1);
+	}
+	else
+	{
+		m_szRxLatDeg.Empty();
+		m_szRxLatMin.Empty();
+		m_szRxLatSec.Empty();
+	}
+
+	if (!m_szRxLon.IsEmpty())
+	{
+		deg = _wtof(LPCTSTR(m_szRxLon));
+		dms = DECtoDMS(deg);
+		m_szRxLonDeg.Format(L"%d", (int)dms.deg);
+		m_szRxLonMin.Format(L"%d", (int)dms.min);
+		m_szRxLonSec.Format(L"%d", (int)dms.sec);
+		if (deg >= 0)
+			m_cbCombo4.SetCurSel(0);
+		else
+			m_cbCombo4.SetCurSel(1);
+	}
+	else
+	{
+		m_szRxLonDeg.Empty();
+		m_szRxLonMin.Empty();
+		m_szRxLonSec.Empty();
+	}
+
+	UpdateData(FALSE);
 }
 
 

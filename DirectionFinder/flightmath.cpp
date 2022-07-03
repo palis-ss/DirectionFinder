@@ -78,12 +78,12 @@ double compute_distance_spherical_law_of_cosine(struct _COORD_ pos1, struct _COO
 // http://www.movable-type.co.uk/scripts/latlong-vincenty.html#direct
 // This function finds location of the destination point
 // given a start point, an initial bearing, and a distance travelled
-struct _COORD_ compute_coord_vincenty(struct _COORD_ pos, double brng, double dist)
+struct _COORD_ compute_coord_vincenty(struct _COORD_ pos, double brng_deg, double dist_m)
 {
 	struct _COORD_ retpos;
 	double a = EARTH_RADIUS_EQUITORIAL, b = EARTH_RADIUS_POLAR, f = EARTH_FLATTENING;  // WGS-84 ellipsoid params
-	double s = dist;
-	double alpha1 = brng*pi/180.0;
+	double s = dist_m;
+	double alpha1 = brng_deg * DEG2RAD;
 	double sinAlpha1 = sin(alpha1);
 	double cosAlpha1 = cos(alpha1);
 
@@ -99,10 +99,10 @@ struct _COORD_ compute_coord_vincenty(struct _COORD_ pos, double brng, double di
 	double sigma = s / (b*A), sigmaP = twopi;
 
 
-	double  sinSigma;
-	double  cos2SigmaM;
-	double  cosSigma;
-	double  deltaSigma;
+	double  sinSigma = 0.0;
+	double  cos2SigmaM = 0.0;
+	double  cosSigma = 0.0;
+	double  deltaSigma = 0.0;
 	while (fabs(sigma-sigmaP) > 1e-12)
 	{
 		cos2SigmaM = cos(2.0*sigma1 + sigma);
@@ -293,37 +293,45 @@ double geocentric_radius_m(double latdeg)
 }
 
 
+struct _DMS_ DECtoDMS(double deg)
+{
+	struct _DMS_ dms;
+	double absdeg = fabs(deg);
 
-#if 0
+	dms.deg = floor(absdeg);
+	dms.min = floor((absdeg - dms.deg) * 60.0);
+	dms.sec = (absdeg - dms.deg - (dms.min / 60.0)) * 3600.0;
 
+	return dms;
+}
 
-
-double ECEF_XYZ2LatLonH_iterative(double X, double Y, double Z, double Lat0)
+struct _COORD_ ECEF_XYZ2LatLonH_iterative(double X, double Y, double Z, double Lat0)
 {
 	// This function transfer Standard ECEF XYZ to Lat, Lon, H
 	// Lat, Lon are in radian. Lat is geodesic.
 	// Use iterative algorithm from Noureldin, Chapter 2.5.4
 
+	// Lat 0 is initial guess
 	// Atan2(y,x) will return angle from -PI to PI 
-
-	double Lat, Lon;
 	double H = 0;
 	double RN, P;
 	double SinLat, CosLat;
 	double Lat_old, H_old;
+	struct _COORD_ res = {};
 
 	// WGS84
 	//double e = 0.08181919084261; // Eccentricity 
-	double e2 = 0.00669437999014; // e^2 
-	double a = Sixdof._sa; // 6378137.0 m
+	double e2 = EARTH_ECCENTRICITY_SQ; // e^2
+	double a = EARTH_RADIUS_EQUITORIAL; // 6378137.0 m
 
 	// Longitude
-	Lon = Math.Atan2(Y, X); // rad 
+	double Lon = atan2(Y, X); // rad 
 
 	// Latitude
-	Lat = Lat0; // Initial guess
-	// Lat = Math.Atan(Z / Math.Sqrt(X*X + Y*Y));  // We can use this approximation as initial guess if there is no Lat0 information.
+	double Lat = Lat0; // Initial guess
+	// Lat = atan(Z / sqrt(X*X + Y*Y));  // We can use this approximation as initial guess if there is no Lat0 information.
 
+	// search condition
 	double convergence_criteria_dLat = 0.000000001; // deg
 	double convergence_criteria_dH = 0.000001; // m
 	double dLat = 999.0, dH = 999.0; // any number bigger than criteria
@@ -332,26 +340,26 @@ double ECEF_XYZ2LatLonH_iterative(double X, double Y, double Z, double Lat0)
 
 	while ((dLat > convergence_criteria_dLat || dH > convergence_criteria_dH) && i <= max_iteration)
 	{
-		SinLat = Math.Sin(Lat);
-		CosLat = Math.Cos(Lat);
-		P = Math.Sqrt(X * X + Y * Y);
+		SinLat = sin(Lat);
+		CosLat = cos(Lat);
+		P = sqrt(X * X + Y * Y);
 
 		Lat_old = Lat;
 		H_old = H;
 
-		RN = a / Math.Sqrt(1 - e2 * SinLat * SinLat);
+		RN = a / sqrt(1.0 - e2 * SinLat * SinLat);
 		H = P / CosLat - RN;
 
-		Lat = Math.Atan2((Z / P) * (RN + H), RN * (1 - e2) + H);
+		Lat = atan2((Z / P) * (RN + H), RN * (1.0 - e2) + H);
 
-		dH = Math.Abs(H - H_old);
-		dLat = Util.RAD2DEG(Math.Abs(Lat - Lat_old));
+		dH = fabs(H - H_old);
+		dLat = fabs(Lat - Lat_old) * RAD2DEG;
 		i++;
 	}
 
-	double[] result = new double[] { Lat, Lon, H };
+	res.lat = Lat;
+	res.lon = Lon;
+	res.alt = H;
 
-	return result;
+	return res;
 }
-
-#endif

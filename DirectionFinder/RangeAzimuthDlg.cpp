@@ -24,6 +24,8 @@ CRangeAzimuthDlg::CRangeAzimuthDlg(CWnd* pParent /*=nullptr*/)
 	, m_szTxLonDeg(_T(""))
 	, m_szTxLonMin(_T(""))
 	, m_szTxLonSec(_T(""))
+	, m_szRange(_T(""))
+	, m_szAzimuth(_T(""))
 {
 
 }
@@ -47,6 +49,8 @@ void CRangeAzimuthDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_TX_LON_SEC_EDIT, m_szTxLonSec);
 	DDX_Control(pDX, IDC_NS_COMBO1, m_cbCombo1);
 	DDX_Control(pDX, IDC_NS_COMBO2, m_cbCombo2);
+	DDX_Text(pDX, IDC_RANGE, m_szRange);
+	DDX_Text(pDX, IDC_AZIMUTH, m_szAzimuth);
 }
 
 
@@ -62,15 +66,85 @@ END_MESSAGE_MAP()
 
 void CRangeAzimuthDlg::OnBnClickedRadio1()
 {
+	double dec;	
+
 	EnableCntrolGroup(IDC_DMS_GROUP, FALSE);
 	EnableCntrolGroup(IDC_DECIMAL_GROUP, TRUE);
+
+	UpdateData();
+	if (!m_szTxLatDeg.IsEmpty() && !m_szTxLatMin.IsEmpty() && !m_szTxLatSec.IsEmpty())
+	{
+		dec = _wtof(LPCTSTR(m_szTxLatDeg)) + _wtof(LPCTSTR(m_szTxLatMin)) / 60.0 + _wtof(LPCTSTR(m_szTxLatSec)) / 3600.0;
+		if (m_cbCombo1.GetCurSel() != 0)
+			dec *= -1;
+
+		m_szTxLat.Format(L"%.6f", dec);
+	}
+	else
+		m_szTxLat.Empty();
+
+	if (!m_szTxLonDeg.IsEmpty() && !m_szTxLonMin.IsEmpty() && !m_szTxLonSec.IsEmpty())
+	{
+		dec = _wtof(LPCTSTR(m_szTxLonDeg)) + _wtof(LPCTSTR(m_szTxLonMin)) / 60.0 + _wtof(LPCTSTR(m_szTxLonSec)) / 3600.0;
+		if (m_cbCombo2.GetCurSel() != 0)
+			dec *= -1;
+		m_szTxLon.Format(L"%.6f", dec);
+	}
+	else
+		m_szTxLon.Empty();
+
+	UpdateData(FALSE);
 }
 
 
 void CRangeAzimuthDlg::OnBnClickedRadio2()
 {
+	double deg;
+	struct _DMS_ dms = {};
+
 	EnableCntrolGroup(IDC_DECIMAL_GROUP, FALSE);
 	EnableCntrolGroup(IDC_DMS_GROUP, TRUE);
+
+	UpdateData();
+	if (!m_szTxLat.IsEmpty())
+	{
+		deg = _wtof(LPCTSTR(m_szTxLat));
+		dms = DECtoDMS(deg);
+		m_szTxLatDeg.Format(L"%d", (int)dms.deg);
+		m_szTxLatMin.Format(L"%d", (int)dms.min);
+		m_szTxLatSec.Format(L"%d", (int)dms.sec);
+		
+		if (deg >= 0)
+			m_cbCombo1.SetCurSel(0);
+		else
+			m_cbCombo1.SetCurSel(1);
+	}
+	else
+	{
+		m_szTxLatDeg.Empty();
+		m_szTxLatMin.Empty();
+		m_szTxLatSec.Empty();
+	}
+
+	if (!m_szTxLon.IsEmpty())
+	{
+		deg = _wtof(LPCTSTR(m_szTxLon));
+		dms = DECtoDMS(deg);
+		m_szTxLonDeg.Format(L"%d", (int)dms.deg);
+		m_szTxLonMin.Format(L"%d", (int)dms.min);
+		m_szTxLonSec.Format(L"%d", (int)dms.sec);
+		if (deg >= 0)
+			m_cbCombo2.SetCurSel(0);
+		else
+			m_cbCombo2.SetCurSel(1);
+	}
+	else
+	{
+		m_szTxLonDeg.Empty();
+		m_szTxLonMin.Empty();
+		m_szTxLonSec.Empty();
+	}
+	UpdateData(FALSE);
 }
 
 
@@ -111,19 +185,19 @@ CWnd* CRangeAzimuthDlg::GetNextDlgGroupItemEx(CWnd* pCtrlWnd)
 
 void CRangeAzimuthDlg::OnBnClickedComputeButton()
 {
-	struct _COORD_ txcoord = {};
-	struct _POLAR_COOR_ res;
+	struct _COORD_ txcoord = {}, res = {};
+	struct _POLAR_COOR_ raz = {};
 	TCHAR s[100];
 
 	UpdateData();
 
 	switch (m_nLocationFormat)
 	{
-	case 0:		
-		txcoord.lat = _wtof(LPCTSTR(m_szTxLat));		
+	case 0:
+		txcoord.lat = _wtof(LPCTSTR(m_szTxLat));
 		txcoord.lon = _wtof(LPCTSTR(m_szTxLon));
 		break;
-	case 1:		
+	case 1:
 		txcoord.lat = _wtof(LPCTSTR(m_szTxLatDeg)) + _wtof(LPCTSTR(m_szTxLatMin)) / 60.0 + _wtof(LPCTSTR(m_szTxLatSec)) / 3600.0;
 		txcoord.lon = _wtof(LPCTSTR(m_szTxLonDeg)) + _wtof(LPCTSTR(m_szTxLonMin)) / 60.0 + _wtof(LPCTSTR(m_szTxLonSec)) / 3600.0;
 
@@ -132,7 +206,40 @@ void CRangeAzimuthDlg::OnBnClickedComputeButton()
 		break;
 	}
 
-	swprintf(s, 100, L"%.2f degrees %.2f m", res.angle, res.dist);
+	switch (m_nAzUnit)
+	{
+	case 0:
+		raz.angle = _wtof(LPCTSTR(m_szAzimuth));
+		break;
+	case 1:
+		raz.angle = _wtof(LPCTSTR(m_szAzimuth)) * RAD2DEG;
+		break;
+	case 2:
+		raz.angle = _wtof(LPCTSTR(m_szAzimuth)) / 17.7777777777;
+		break;
+	}
+
+	raz.dist = _wtof(LPCTSTR(m_szRange));
+	res = compute_coord_vincenty(txcoord, raz.angle, raz.dist);
+	struct _DMS_ latdms, londms;
+
+	latdms = DECtoDMS(res.lat);
+	londms = DECtoDMS(res.lon);
+	swprintf(s, 100, L"%.6f, %.6f\n= %.0f°%02.0f'%02.2f\"%c,  %.0f°%02.0f'%02.2f\"%c", res.lat, res.lon,
+		latdms.deg, latdms.min, latdms.sec, res.lat > 0 ? L'N' : L'S', londms.deg, londms.min, londms.sec, res.lon > 0 ? L'E' : L'W');
 
 	SetDlgItemText(IDC_OUTPUT_STATIC, s);
+}
+
+
+BOOL CRangeAzimuthDlg::OnInitDialog()
+{
+	CPropertyPage::OnInitDialog();
+
+	// TODO:  Add extra initialization here
+	m_cbCombo1.SetCurSel(0);
+	m_cbCombo2.SetCurSel(0);
+
+	return TRUE;  // return TRUE unless you set the focus to a control
+				  // EXCEPTION: OCX Property Pages should return FALSE
 }
