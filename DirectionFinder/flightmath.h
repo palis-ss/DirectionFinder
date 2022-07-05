@@ -47,3 +47,4 @@ double angle_from_sides_spherical(double a, double C);
 struct _POLAR_COOR_ compute_distance_bearing_vincenty(struct _COORD_ pos1, struct _COORD_ pos2);
 double geocentric_radius_m(double latdeg);
 struct _DMS_ DECtoDMS(double deg);
+struct _COORD_ ECEF_XYZ2LatLonH_iterative(double X, double Y, double Z, double Lat0);
