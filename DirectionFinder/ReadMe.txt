@@ -51,8 +51,8 @@ res\DirectionFinder.rc2
 
 The application wizard creates one dialog class:
 
-FindLocationDlg.h, FindLocationDlg.cpp - the dialog
-    These files contain your CFindLocationDlg class.  This class defines
+FromLocationDlg.h, FromLocationDlg.cpp - the dialog
+    These files contain your CFromLocationDlg class.  This class defines
     the behavior of your application's main dialog.  The dialog's template is
     in DirectionFinder.rc, which can be edited in Microsoft Visual C++.
 

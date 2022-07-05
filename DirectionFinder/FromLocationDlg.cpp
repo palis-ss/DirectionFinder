@@ -1,10 +1,10 @@
 
-// FindLocationDlg.cpp : implementation file
+// FromLocationDlg.cpp : implementation file
 //
 
 #include "stdafx.h"
 #include "DirectionFinder.h"
-#include "FindLocationDlg.h"
+#include "FromLocationDlg.h"
 #include "afxdialogex.h"
 #include "flightmath.h"
 
@@ -14,10 +14,10 @@
 #endif
 
 
-// CFindLocationDlg dialog
+// CFromLocationDlg dialog
 
-CFindLocationDlg::CFindLocationDlg(CWnd* pParent /*=NULL*/)
-	: CPropertyPage(CFindLocationDlg::IDD)
+CFromLocationDlg::CFromLocationDlg(CWnd* pParent /*=NULL*/)
+	: CPropertyPage(CFromLocationDlg::IDD)
 	, m_szRxLat(_T(""))
 	, m_szTxLat(_T(""))
 	, m_szRxLon(_T(""))
@@ -39,7 +39,7 @@ CFindLocationDlg::CFindLocationDlg(CWnd* pParent /*=NULL*/)
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
 
-void CFindLocationDlg::DoDataExchange(CDataExchange* pDX)
+void CFromLocationDlg::DoDataExchange(CDataExchange* pDX)
 {	
 	CPropertyPage::DoDataExchange(pDX);
 
@@ -66,20 +66,20 @@ void CFindLocationDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_RX_LON_SEC_EDIT, m_szRxLonSec);
 }
 
-BEGIN_MESSAGE_MAP(CFindLocationDlg, CPropertyPage)
+BEGIN_MESSAGE_MAP(CFromLocationDlg, CPropertyPage)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	ON_BN_CLICKED(IDC_COMPUTE_BUTTON, &CFindLocationDlg::OnBnClickedComputeButton)
-	ON_BN_CLICKED(IDC_RADIO2, &CFindLocationDlg::OnBnClickedRadio2)
-	ON_BN_CLICKED(IDC_RADIO1, &CFindLocationDlg::OnBnClickedRadio1)
-	ON_BN_CLICKED(IDC_SWAPLOC_BUTTON, &CFindLocationDlg::OnBnClickedSwaplocButton)
+	ON_BN_CLICKED(IDC_COMPUTE_BUTTON, &CFromLocationDlg::OnBnClickedComputeButton)
+	ON_BN_CLICKED(IDC_RADIO2, &CFromLocationDlg::OnBnClickedRadio2)
+	ON_BN_CLICKED(IDC_RADIO1, &CFromLocationDlg::OnBnClickedRadio1)
+	ON_BN_CLICKED(IDC_SWAPLOC_BUTTON, &CFromLocationDlg::OnBnClickedSwaplocButton)
 END_MESSAGE_MAP()
 
 
-// CFindLocationDlg message handlers
+// CFromLocationDlg message handlers
 
-BOOL CFindLocationDlg::OnInitDialog()
+BOOL CFromLocationDlg::OnInitDialog()
 {
 	CPropertyPage::OnInitDialog();
 
@@ -93,7 +93,7 @@ BOOL CFindLocationDlg::OnInitDialog()
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
-void CFindLocationDlg::OnSysCommand(UINT nID, LPARAM lParam)
+void CFromLocationDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
 	CPropertyPage::OnSysCommand(nID, lParam);
 }
@@ -102,7 +102,7 @@ void CFindLocationDlg::OnSysCommand(UINT nID, LPARAM lParam)
 //  to draw the icon.  For MFC applications using the document/view model,
 //  this is automatically done for you by the framework.
 
-void CFindLocationDlg::OnPaint()
+void CFromLocationDlg::OnPaint()
 {
 	if (IsIconic())
 	{
@@ -129,14 +129,14 @@ void CFindLocationDlg::OnPaint()
 
 // The system calls this function to obtain the cursor to display while the user drags
 //  the minimized window.
-HCURSOR CFindLocationDlg::OnQueryDragIcon()
+HCURSOR CFromLocationDlg::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
 
 
-void CFindLocationDlg::OnBnClickedComputeButton()
+void CFromLocationDlg::OnBnClickedComputeButton()
 {
 	struct _COORD_ rxcoord = {}, txcoord = {};
 	struct _POLAR_COOR_ res;
@@ -175,14 +175,14 @@ void CFindLocationDlg::OnBnClickedComputeButton()
 }
 
 
-BOOL CFindLocationDlg::DestroyWindow()
+BOOL CFromLocationDlg::DestroyWindow()
 {
 	// TODO: Add your specialized code here and/or call the base class
 
 	return CPropertyPage::DestroyWindow();
 }
 
-BOOL CFindLocationDlg::EnableCntrolGroup(int GroupID, BOOL showwindow)
+BOOL CFromLocationDlg::EnableCntrolGroup(int GroupID, BOOL showwindow)
 {	
 	CWnd* pCtrlWnd;
 
@@ -200,7 +200,7 @@ BOOL CFindLocationDlg::EnableCntrolGroup(int GroupID, BOOL showwindow)
 	return TRUE;
 }
 
-CWnd* CFindLocationDlg::GetNextDlgGroupItemEx(CWnd * pCtrlWnd)
+CWnd* CFromLocationDlg::GetNextDlgGroupItemEx(CWnd * pCtrlWnd)
 {
 	CWnd* pWnd;
 
@@ -215,7 +215,7 @@ CWnd* CFindLocationDlg::GetNextDlgGroupItemEx(CWnd * pCtrlWnd)
 	return pWnd;
 }
 
-void CFindLocationDlg::OnBnClickedRadio1()
+void CFromLocationDlg::OnBnClickedRadio1()
 {
 	double dec;
 	EnableCntrolGroup(IDC_DMS_GROUP, FALSE);
@@ -268,7 +268,7 @@ void CFindLocationDlg::OnBnClickedRadio1()
 }
 
 
-void CFindLocationDlg::OnBnClickedRadio2()
+void CFromLocationDlg::OnBnClickedRadio2()
 {
 	double deg;
 	struct _DMS_ dms = {};
@@ -359,7 +359,7 @@ void CFindLocationDlg::OnBnClickedRadio2()
 }
 
 
-void CFindLocationDlg::OnBnClickedSwaplocButton()
+void CFromLocationDlg::OnBnClickedSwaplocButton()
 {
 	CString sztx, szrx;
 	int txhem, rxhem;

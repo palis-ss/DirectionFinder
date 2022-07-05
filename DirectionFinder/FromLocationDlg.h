@@ -1,16 +1,16 @@
 
-// FindLocationDlg.h : header file
+// FromLocationDlg.h : header file
 //
 
 #pragma once
 
 
-// CFindLocationDlg dialog
-class CFindLocationDlg : public CPropertyPage
+// CFromLocationDlg dialog
+class CFromLocationDlg : public CPropertyPage
 {
 // Construction
 public:
-	CFindLocationDlg(CWnd* pParent = NULL);	// standard constructor
+	CFromLocationDlg(CWnd* pParent = NULL);	// standard constructor
 
 // Dialog Data
 	enum { IDD = IDD_DIRECTIONFINDER_DIALOG };
