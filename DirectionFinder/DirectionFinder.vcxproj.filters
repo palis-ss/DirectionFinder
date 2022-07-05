@@ -21,7 +21,7 @@
     <ClInclude Include="DirectionFinder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DirectionFinderDlg.h">
+    <ClInclude Include="FindLocationDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
@@ -47,7 +47,7 @@
     <ClCompile Include="DirectionFinder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DirectionFinderDlg.cpp">
+    <ClCompile Include="FindLocationDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">

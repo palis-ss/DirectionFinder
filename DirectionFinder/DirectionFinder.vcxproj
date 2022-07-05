@@ -100,7 +100,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DirectionFinder.h" />
-    <ClInclude Include="DirectionFinderDlg.h" />
+    <ClInclude Include="FindLocationDlg.h" />
     <ClInclude Include="DirectionFinderSheet.h" />
     <ClInclude Include="flightmath.h" />
     <ClInclude Include="RangeAzimuthDlg.h" />
@@ -110,7 +110,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectionFinder.cpp" />
-    <ClCompile Include="DirectionFinderDlg.cpp" />
+    <ClCompile Include="FindLocationDlg.cpp" />
     <ClCompile Include="DirectionFinderSheet.cpp" />
     <ClCompile Include="flightmath.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>

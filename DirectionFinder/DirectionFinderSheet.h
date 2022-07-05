@@ -1,5 +1,5 @@
 #pragma once
-#include "DirectionFinderDlg.h"
+#include "FindLocationDlg.h"
 #include "RangeAzimuthDlg.h"
 
 
@@ -18,7 +18,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-	CDirectionFinderDlg dlgDirectionFinder;
+	CFindLocationDlg dlgDirectionFinder;
 	CRangeAzimuthDlg dlgRangeAz;
 
 public:
