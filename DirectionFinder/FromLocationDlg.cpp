@@ -281,9 +281,9 @@ void CFromLocationDlg::OnBnClickedRadio2()
 	{
 		deg = _wtof(LPCTSTR(m_szTxLat));
 		dms = DECtoDMS(deg);
-		m_szTxLatDeg.Format(L"%d", (int)dms.deg);
-		m_szTxLatMin.Format(L"%d", (int)dms.min);
-		m_szTxLatSec.Format(L"%d", (int)dms.sec);
+		m_szTxLatDeg.Format(L"%.0f", dms.deg);
+		m_szTxLatMin.Format(L"%.0f", dms.min);
+		m_szTxLatSec.Format(L"%.2f", dms.sec);
 
 		if (deg >= 0)
 			m_cbCombo1.SetCurSel(0);
@@ -301,9 +301,9 @@ void CFromLocationDlg::OnBnClickedRadio2()
 	{
 		deg = _wtof(LPCTSTR(m_szTxLon));
 		dms = DECtoDMS(deg);
-		m_szTxLonDeg.Format(L"%d", (int)dms.deg);
-		m_szTxLonMin.Format(L"%d", (int)dms.min);
-		m_szTxLonSec.Format(L"%d", (int)dms.sec);
+		m_szTxLonDeg.Format(L"%.0f", dms.deg);
+		m_szTxLonMin.Format(L"%.0f", dms.min);
+		m_szTxLonSec.Format(L"%.2f", dms.sec);
 		if (deg >= 0)
 			m_cbCombo2.SetCurSel(0);
 		else
@@ -320,9 +320,9 @@ void CFromLocationDlg::OnBnClickedRadio2()
 	{
 		deg = _wtof(LPCTSTR(m_szRxLat));
 		dms = DECtoDMS(deg);
-		m_szRxLatDeg.Format(L"%d", (int)dms.deg);
-		m_szRxLatMin.Format(L"%d", (int)dms.min);
-		m_szRxLatSec.Format(L"%d", (int)dms.sec);
+		m_szRxLatDeg.Format(L"%.0f", dms.deg);
+		m_szRxLatMin.Format(L"%.0f", dms.min);
+		m_szRxLatSec.Format(L"%.2f", dms.sec);
 
 		if (deg >= 0)
 			m_cbCombo3.SetCurSel(0);
@@ -340,9 +340,9 @@ void CFromLocationDlg::OnBnClickedRadio2()
 	{
 		deg = _wtof(LPCTSTR(m_szRxLon));
 		dms = DECtoDMS(deg);
-		m_szRxLonDeg.Format(L"%d", (int)dms.deg);
-		m_szRxLonMin.Format(L"%d", (int)dms.min);
-		m_szRxLonSec.Format(L"%d", (int)dms.sec);
+		m_szRxLonDeg.Format(L"%.0f", dms.deg);
+		m_szRxLonMin.Format(L"%.0f", dms.min);
+		m_szRxLonSec.Format(L"%.2f", dms.sec);
 		if (deg >= 0)
 			m_cbCombo4.SetCurSel(0);
 		else

@@ -110,9 +110,9 @@ void CRangeAzimuthDlg::OnBnClickedRadio2()
 	{
 		deg = _wtof(LPCTSTR(m_szTxLat));
 		dms = DECtoDMS(deg);
-		m_szTxLatDeg.Format(L"%d", (int)dms.deg);
-		m_szTxLatMin.Format(L"%d", (int)dms.min);
-		m_szTxLatSec.Format(L"%d", (int)dms.sec);
+		m_szTxLatDeg.Format(L"%.0f", dms.deg);
+		m_szTxLatMin.Format(L"%.0f", dms.min);
+		m_szTxLatSec.Format(L"%2.2f", dms.sec);
 		
 		if (deg >= 0)
 			m_cbCombo1.SetCurSel(0);
@@ -130,9 +130,9 @@ void CRangeAzimuthDlg::OnBnClickedRadio2()
 	{
 		deg = _wtof(LPCTSTR(m_szTxLon));
 		dms = DECtoDMS(deg);
-		m_szTxLonDeg.Format(L"%d", (int)dms.deg);
-		m_szTxLonMin.Format(L"%d", (int)dms.min);
-		m_szTxLonSec.Format(L"%d", (int)dms.sec);
+		m_szTxLonDeg.Format(L"%.0f", dms.deg);
+		m_szTxLonMin.Format(L"%.0f", dms.min);
+		m_szTxLonSec.Format(L"%2.2f", dms.sec);
 		if (deg >= 0)
 			m_cbCombo2.SetCurSel(0);
 		else
